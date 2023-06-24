@@ -7,4 +7,26 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Driver" Version="2.20.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.20.0" />
+    <PackageReference Include="MongoDB.Bson" Version="2.20.0" />
+    <PackageReference Include="MongoDB.Driver.Linq.AsyncEnumerable" Version="2.15.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="DataAccess\" />
+    <None Remove="DataAccess\Models\" />
+    <None Remove="DataAccess\Repositories\" />
+    <None Remove="DataAccess\Models\Abstractions\" />
+    <None Remove="DataAccess\Repositories\Abstractions\" />
+    <None Remove="DataAccess\Configuration\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DataAccess\" />
+    <Folder Include="DataAccess\Models\" />
+    <Folder Include="DataAccess\Repositories\" />
+    <Folder Include="DataAccess\Models\Abstractions\" />
+    <Folder Include="DataAccess\Repositories\Abstractions\" />
+    <Folder Include="DataAccess\Configuration\" />
+  </ItemGroup>
 </Project>
