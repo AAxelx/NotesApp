@@ -1,22 +1,21 @@
-﻿using System;
-using System.Diagnostics;
-using System.Linq.Expressions;
+﻿using System.Linq.Expressions;
 using MongoDB.Bson;
 using NotesApp.DAL.DataAccess.Models.Abstractions;
 
 namespace NotesApp.DAL.DataAccess.Repositories.Abstractions
 {
-	public interface IMongoRepository
+	public interface IMongoRepository<T>
+        where T : IDocument
     {
-        IQueryable<IDocument> AsQueryable();
+        IQueryable<T> AsQueryable();
 
-        IEnumerable<IDocument> FilterBy(Expression<Func<IDocument, bool>> filterExpression);
+        IEnumerable<T> FilterBy(Expression<Func<T, bool>> filterExpression);
 
-        Task<IDocument> FindAsync(Expression<Func<IDocument, bool>> filterExpression);
+        Task<T> FindAsync(Expression<Func<T, bool>> filterExpression);
 
-        Task<IDocument> FindTaskListByUserIdAsync(ObjectId id);
+        Task<T> FindTaskListByUserIdAsync(ObjectId id);
 
-        Task InsertAsync(IDocument document);
+        Task InsertAsync(T document);
 
         Task DeleteByIdAsync(ObjectId id);
     }

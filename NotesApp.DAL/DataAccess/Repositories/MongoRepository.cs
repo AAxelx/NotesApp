@@ -8,24 +8,25 @@ using NotesApp.DAL.DataAccess.Repositories.Abstractions;
 
 namespace NotesApp.DAL.DataAccess.Repositories
 {
-	public class MongoRepository : IMongoRepository
+	public class MongoRepository<T> : IMongoRepository<T>
+        where T : IDocument
 	{
-        private readonly IMongoCollection<IDocument> _collection;
+        private readonly IMongoCollection<T> _collection;
 
         public MongoRepository(IMongoDbSettings settings)
         {
             var database = new MongoClient(settings.ConnectionString).GetDatabase(settings.DatabaseName);
-            _collection = database.GetCollection<IDocument>(GetCollectionName(typeof(IDocument)));
+            _collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
         }
 
-        public virtual async Task<IDocument> FindAsync(Expression<Func<IDocument, bool>> filterExpression)
+        public virtual async Task<T> FindAsync(Expression<Func<T, bool>> filterExpression)
         {
             var result = await _collection.Find(filterExpression).FirstOrDefaultAsync();
 
             return result;
         }
 
-        public virtual async Task<IDocument> FindTaskListByUserIdAsync(ObjectId userId)
+        public virtual async Task<T> FindTaskListByUserIdAsync(ObjectId userId)
         {
             var filter = Builders<ITaskList>.Filter.Or(
                     Builders<ITaskList>.Filter.Eq(t => t.OwnerId, userId),
@@ -33,30 +34,31 @@ namespace NotesApp.DAL.DataAccess.Repositories
                         Builders<ObjectId>.Filter.Eq(i => i, userId)));
 
             var filterDocument = filter.ToBsonDocument();
-            var filterExpression = new BsonDocumentFilterDefinition<IDocument>(filterDocument);
+            var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
 
             var result = await _collection.Find(filterExpression).SingleOrDefaultAsync();
             return result;
         }
 
-        public virtual async Task InsertAsync(IDocument document)
+        public virtual async Task InsertAsync(T document)
         {
+
             await _collection.InsertOneAsync(document);
         }
 
-        public virtual async Task UpdateOneAsync(IDocument document)
+        public virtual async Task UpdateOneAsync(T document)
         {
-            var filter = Builders<IDocument>.Filter.Eq(doc => doc.Id, document.Id);
+            var filter = Builders<T>.Filter.Eq(doc => doc.Id, document.Id);
             await _collection.FindOneAndReplaceAsync(filter, document);
         }
 
         public async Task DeleteByIdAsync(ObjectId id)
         {
-            var filter = Builders<IDocument>.Filter.Eq(doc => doc.Id, id);
+            var filter = Builders<T>.Filter.Eq(doc => doc.Id, id);
             var result = await _collection.FindOneAndDeleteAsync(filter);
         }
 
-        public virtual IQueryable<IDocument> AsQueryable()
+        public virtual IQueryable<T> AsQueryable()
         {
             return _collection.AsQueryable();
         }
@@ -70,8 +72,8 @@ namespace NotesApp.DAL.DataAccess.Repositories
             return attribute?.CollectionName ?? null;
         }
 
-        public virtual IEnumerable<IDocument> FilterBy(
-            Expression<Func<IDocument, bool>> filterExpression)
+        public virtual IEnumerable<T> FilterBy(
+            Expression<Func<T, bool>> filterExpression)
         {
             return _collection.Find(filterExpression).ToEnumerable();
         }
