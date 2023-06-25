@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using NotesApp.DAL.DataAccess.Configuration;
 using NotesApp.DAL.DataAccess.Models.Abstractions;
 
@@ -8,6 +9,7 @@ namespace NotesApp.DAL.DataAccess.Models
 	[BsonCollection("TaskList")]
     public class TaskList : ITaskList
 	{
+        [BsonId]
         public ObjectId Id { get; set; }
 
         [StringLength(30, MinimumLength = 0)]
