@@ -22,7 +22,7 @@ namespace NotesApp.DAL.DataAccess.Models
 
         public ObjectId OwnerId { get; set; }
 
-        public List<ObjectId> SharedWith { get; set; }
+        public List<ObjectId> SharedAccessUserIds { get; set; }
     }
 }
 
