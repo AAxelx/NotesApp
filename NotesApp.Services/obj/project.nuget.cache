@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "dgSpecHash": "H1inpkxy+whXH4Tut7fWb9a/GNmtwOFX2GEpvbYQS28qR6gh7YcefdYrVseefu71tVHHo3GBTAWlQtxeSpnt+g==",
+  "success": true,
+  "projectFilePath": "/Users/mac/Projects/NotesApp/NotesApp.Services/NotesApp.Services.csproj",
+  "expectedPackageFiles": [
+    "/Users/mac/.nuget/packages/awssdk.core/3.7.100.14/awssdk.core.3.7.100.14.nupkg.sha512",
+    "/Users/mac/.nuget/packages/awssdk.securitytoken/3.7.100.14/awssdk.securitytoken.3.7.100.14.nupkg.sha512",
+    "/Users/mac/.nuget/packages/dnsclient/1.6.1/dnsclient.1.6.1.nupkg.sha512",
+    "/Users/mac/.nuget/packages/microsoft.extensions.logging.abstractions/2.0.0/microsoft.extensions.logging.abstractions.2.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/microsoft.netcore.platforms/5.0.0/microsoft.netcore.platforms.5.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/microsoft.win32.registry/5.0.0/microsoft.win32.registry.5.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/mongodb.bson/2.20.0/mongodb.bson.2.20.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/mongodb.driver/2.20.0/mongodb.driver.2.20.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/mongodb.driver.core/2.20.0/mongodb.driver.core.2.20.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/mongodb.driver.linq.asyncenumerable/2.15.4/mongodb.driver.linq.asyncenumerable.2.15.4.nupkg.sha512",
+    "/Users/mac/.nuget/packages/mongodb.libmongocrypt/1.8.0/mongodb.libmongocrypt.1.8.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/sharpcompress/0.30.1/sharpcompress.0.30.1.nupkg.sha512",
+    "/Users/mac/.nuget/packages/snappier/1.0.0/snappier.1.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/system.buffers/4.5.1/system.buffers.4.5.1.nupkg.sha512",
+    "/Users/mac/.nuget/packages/system.runtime.compilerservices.unsafe/5.0.0/system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/system.security.accesscontrol/5.0.0/system.security.accesscontrol.5.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/system.security.principal.windows/5.0.0/system.security.principal.windows.5.0.0.nupkg.sha512",
+    "/Users/mac/.nuget/packages/zstdsharp.port/0.6.2/zstdsharp.port.0.6.2.nupkg.sha512"
+  ],
+  "logs": []
+}
