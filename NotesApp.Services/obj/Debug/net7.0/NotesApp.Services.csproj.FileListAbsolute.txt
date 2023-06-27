@@ -1,0 +1,5 @@
+/Users/mac/Projects/NotesApp/NotesApp.Services/obj/Debug/net7.0/NotesApp.Services.csproj.AssemblyReference.cache
+/Users/mac/Projects/NotesApp/NotesApp.Services/obj/Debug/net7.0/NotesApp.Services.GeneratedMSBuildEditorConfig.editorconfig
+/Users/mac/Projects/NotesApp/NotesApp.Services/obj/Debug/net7.0/NotesApp.Services.AssemblyInfoInputs.cache
+/Users/mac/Projects/NotesApp/NotesApp.Services/obj/Debug/net7.0/NotesApp.Services.AssemblyInfo.cs
+/Users/mac/Projects/NotesApp/NotesApp.Services/obj/Debug/net7.0/NotesApp.Services.csproj.CoreCompileInputs.cache
