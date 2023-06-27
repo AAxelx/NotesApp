@@ -9,13 +9,13 @@ namespace NotesApp.DAL.DataAccess.Repositories.Abstractions
     {
         IQueryable<T> AsQueryable();
 
-        IEnumerable<T> FilterBy(Expression<Func<T, bool>> filterExpression);
+        Task<T> GetByIdAsync(ObjectId id);
 
-        Task<T> FindAsync(Expression<Func<T, bool>> filterExpression);
+        Task<IEnumerable<T>> GetAllTaskListsByUserIdAsync(ObjectId userId);
 
-        Task<T> FindTaskListByUserIdAsync(ObjectId id);
+        Task CreateAsync(T document);
 
-        Task InsertAsync(T document);
+        Task UpdateOneAsync(T document);
 
         Task DeleteByIdAsync(ObjectId id);
     }

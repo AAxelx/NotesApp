@@ -19,28 +19,29 @@ namespace NotesApp.DAL.DataAccess.Repositories
             _collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
         }
 
-        public virtual async Task<T> FindAsync(Expression<Func<T, bool>> filterExpression)
+        public virtual async Task<T> GetByIdAsync(ObjectId id)
         {
+            var filterDocument = Builders<T>.Filter.Eq(doc => doc.Id, id).ToBsonDocument();
+
+            var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
             var result = await _collection.Find(filterExpression).FirstOrDefaultAsync();
 
             return result;
         }
 
-        public virtual async Task<T> FindTaskListByUserIdAsync(ObjectId userId)
+        public virtual async Task<IEnumerable<T>> GetAllTaskListsByUserIdAsync(ObjectId userId)
         {
-            var filter = Builders<ITaskList>.Filter.Or(
+            var filterDocument = Builders<ITaskList>.Filter.Or(
                     Builders<ITaskList>.Filter.Eq(t => t.OwnerId, userId),
-                    Builders<ITaskList>.Filter.ElemMatch(t => t.SharedWith,
-                        Builders<ObjectId>.Filter.Eq(i => i, userId)));
-
-            var filterDocument = filter.ToBsonDocument();
+                    Builders<ITaskList>.Filter.ElemMatch(t => t.SharedAccessUserIds,
+                        Builders<ObjectId>.Filter.Eq(i => i, userId))).ToBsonDocument();
+            
             var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
-
-            var result = await _collection.Find(filterExpression).SingleOrDefaultAsync();
-            return result;
+            var result = await _collection.FindAsync(filterExpression); // get list
+            return await result.ToListAsync();
         }
 
-        public virtual async Task InsertAsync(T document)
+        public virtual async Task CreateAsync(T document)
         {
 
             await _collection.InsertOneAsync(document);
