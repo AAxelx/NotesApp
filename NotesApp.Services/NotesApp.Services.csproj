@@ -10,10 +10,14 @@
   <ItemGroup>
     <None Remove="Services\" />
     <None Remove="Services\Abstractions\" />
+    <None Remove="Models\" />
+    <None Remove="Models\Enums\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\" />
     <Folder Include="Services\Abstractions\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Enums\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NotesApp.DAL\NotesApp.DAL.csproj" />

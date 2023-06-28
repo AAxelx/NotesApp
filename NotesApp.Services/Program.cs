@@ -1,4 +1,6 @@
-﻿namespace NotesApp.Services;
+﻿using NotesApp.Services.Services;
+
+namespace NotesApp.Services;
 
 class Program
 {

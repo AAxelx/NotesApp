@@ -10,7 +10,7 @@ namespace NotesApp.DAL.DataAccess.Models
     public class User : IDocument
     {
         [BsonId]
-        public ObjectId Id { get; set; }
+        public ObjectId? Id { get; set; }
 
         public string Name { get; set; }
     }

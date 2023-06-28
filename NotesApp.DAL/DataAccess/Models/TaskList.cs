@@ -7,15 +7,15 @@ using NotesApp.DAL.DataAccess.Models.Abstractions;
 namespace NotesApp.DAL.DataAccess.Models
 {
 	[BsonCollection("TaskList")]
-    public class TaskList : ITaskList
+    public class TaskList : IDocument
 	{
         [BsonId]
-        public ObjectId Id { get; set; }
-
-        [StringLength(30, MinimumLength = 0)]
-        public string Title { get; set; }
+        [Required]
+        public ObjectId? Id { get; set; }
 
         [StringLength(255, MinimumLength = 1)]
+        public string Title { get; set; }
+
         public string Content { get; set; }
 
         public DateTime LastUpdatedAt { get; set; }

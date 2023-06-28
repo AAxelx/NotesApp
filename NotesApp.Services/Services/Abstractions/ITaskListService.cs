@@ -1,27 +1,26 @@
 ﻿using MongoDB.Bson;
 using NotesApp.DAL.DataAccess.Models.Abstractions;
+using NotesApp.Services.Models;
 
 namespace NotesApp.Services.Services.Abstractions
 {
 	public interface ITaskListService
     {
-        Task<ITaskList> Get(ObjectId listId);
+        Task<ServiceResult> GetByIdAsync(ObjectId listId, ObjectId userId);
 
-        Task<IEnumerable<ITaskList>> GetAll(ObjectId listId);
+        Task<ServiceResult> GetAllByUserIdAsync(ObjectId userId);
 
-        Task<IEnumerable<ITaskList>> GetAllByUserId(ObjectId listId);
+        Task<ServiceResult> CreateAsync(IDocument taskList);
 
-        Task<ITaskList> Create(ITaskList taskList);
+        Task<ServiceResult> UpdateAsync(IDocument taskList, ObjectId userId);
 
-        Task<ITaskList> Update(ITaskList taskList);
+        Task<ServiceResult> DeleteAsync(ObjectId listId, ObjectId userId);
 
-        Task Delete(ObjectId listId);
+        Task<ServiceResult> GetUserAccessListAsync(ObjectId listId, ObjectId userId);
 
-        Task<ITaskList> GetUserAccessList(ObjectId listId);
+        Task<ServiceResult> AddUserAccessAsync(ObjectId listId, ObjectId userId, ObjectId newUserAcessId);
 
-        Task<ITaskList> AddUserAccess(ObjectId listId, ObjectId userId);
-
-        Task<ITaskList> RemoveUserAccess(ObjectId listId, ObjectId userId);
+        Task<ServiceResult> RemoveUserAccessAsync(ObjectId listId, ObjectId userId, ObjectId oldUserAcessId);
     }
 }
 

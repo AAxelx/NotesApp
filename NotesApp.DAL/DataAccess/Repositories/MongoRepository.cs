@@ -19,7 +19,7 @@ namespace NotesApp.DAL.DataAccess.Repositories
             _collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
         }
 
-        public virtual async Task<T> GetByIdAsync(ObjectId id)
+        public virtual async Task<T> GetByIdAsync(ObjectId? id)
         {
             var filterDocument = Builders<T>.Filter.Eq(doc => doc.Id, id).ToBsonDocument();
 
@@ -29,39 +29,46 @@ namespace NotesApp.DAL.DataAccess.Repositories
             return result;
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllTaskListsByUserIdAsync(ObjectId userId)
+        public virtual async Task<IEnumerable<T>> GetAllAsync(FilterDefinition<T> filterDefinition = null)
         {
-            var filterDocument = Builders<ITaskList>.Filter.Or(
-                    Builders<ITaskList>.Filter.Eq(t => t.OwnerId, userId),
-                    Builders<ITaskList>.Filter.ElemMatch(t => t.SharedAccessUserIds,
-                        Builders<ObjectId>.Filter.Eq(i => i, userId))).ToBsonDocument();
-            
+            var filterDocument = filterDefinition.ToBsonDocument();
             var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
-            var result = await _collection.FindAsync(filterExpression); // get list
+
+            var result = await _collection.FindAsync(filterExpression);
+
             return await result.ToListAsync();
         }
 
-        public virtual async Task CreateAsync(T document)
+        public async Task<IEnumerable<T>> GetAllAsync(List<BsonDocument> pipeline)
         {
+            var aggregation = await _collection.AggregateAsync<T>(pipeline);
 
+            return await aggregation.ToListAsync();
+        }
+
+        public virtual async Task<T> CreateAsync(T document)
+        {
             await _collection.InsertOneAsync(document);
+
+            return document;
         }
 
-        public virtual async Task UpdateOneAsync(T document)
+        public virtual async Task<bool> UpdateOneAsync(T document) 
         {
+            var updateDefinition = Builders<T>.Update.Set(doc => doc, document);
             var filter = Builders<T>.Filter.Eq(doc => doc.Id, document.Id);
-            await _collection.FindOneAndReplaceAsync(filter, document);
+
+            var result = await _collection.UpdateOneAsync(filter, updateDefinition);
+
+            return Convert.ToBoolean(result.ModifiedCount);
         }
 
-        public async Task DeleteByIdAsync(ObjectId id)
+        public async Task<bool> DeleteByIdAsync(ObjectId? id)
         {
             var filter = Builders<T>.Filter.Eq(doc => doc.Id, id);
-            var result = await _collection.FindOneAndDeleteAsync(filter);
-        }
+            var result = await _collection.DeleteOneAsync(filter);
 
-        public virtual IQueryable<T> AsQueryable()
-        {
-            return _collection.AsQueryable();
+            return Convert.ToBoolean(result.DeletedCount);
         }
 
         private protected string GetCollectionName(Type documentType)
@@ -71,12 +78,6 @@ namespace NotesApp.DAL.DataAccess.Repositories
             ).FirstOrDefault() as BsonCollectionAttribute;
 
             return attribute?.CollectionName ?? null;
-        }
-
-        public virtual IEnumerable<T> FilterBy(
-            Expression<Func<T, bool>> filterExpression)
-        {
-            return _collection.Find(filterExpression).ToEnumerable();
         }
     }
 }
