@@ -16,7 +16,7 @@ namespace NotesApp.DAL.DataAccess.Models
         [StringLength(255, MinimumLength = 1)]
         public string Title { get; set; }
 
-        public string Content { get; set; }
+        public List<string> Content { get; set; }
 
         public DateTime LastUpdatedAt { get; set; }
 
