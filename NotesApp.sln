@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesApp.DAL", "NotesApp.DA
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesApp.Services", "NotesApp.Services\NotesApp.Services.csproj", "{AAFC39F9-3795-4027-B691-6336ADE04B25}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotesApp.Api", "NotesApp.Api\NotesApp.Api.csproj", "{7B477CBE-590F-4FCE-9274-7054EAB48A0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{AAFC39F9-3795-4027-B691-6336ADE04B25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AAFC39F9-3795-4027-B691-6336ADE04B25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AAFC39F9-3795-4027-B691-6336ADE04B25}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B477CBE-590F-4FCE-9274-7054EAB48A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B477CBE-590F-4FCE-9274-7054EAB48A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B477CBE-590F-4FCE-9274-7054EAB48A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B477CBE-590F-4FCE-9274-7054EAB48A0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
