@@ -29,14 +29,18 @@ namespace NotesApp.DAL.DataAccess.Repositories
             return result;
         }
 
-        public virtual async Task<IEnumerable<T>> GetAllAsync(FilterDefinition<T> filterDefinition = null)
+        public virtual async Task<IEnumerable<TProjection>> GetAllAsync<TProjection>(
+            int pageNumber,
+            int pageSize,
+            FilterDefinition<T> filterDefinition = null,
+            ProjectionDefinition<T, TProjection> projectionDefinition = null,
+            SortDefinition<T> sortDefinition = null)
         {
-            var filterDocument = filterDefinition.ToBsonDocument();
-            var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
+            var pipeline = BuildPipeline(pageNumber, pageSize, filterDefinition, projectionDefinition, sortDefinition);
 
-            var result = await _collection.FindAsync(filterExpression);
+            var result = await _collection.Aggregate(pipeline).ToListAsync();
 
-            return await result.ToListAsync();
+            return result;
         }
 
         public async Task<IEnumerable<T>> GetAllAsync(List<BsonDocument> pipeline)
@@ -78,6 +82,38 @@ namespace NotesApp.DAL.DataAccess.Repositories
             ).FirstOrDefault() as BsonCollectionAttribute;
 
             return attribute?.CollectionName ?? null;
+        }
+
+        private PipelineDefinition<T, TProjection> BuildPipeline<TProjection>(
+            int pageNumber,
+            int pageSize,
+            FilterDefinition<T> filterDefinition = null,
+            ProjectionDefinition<T, TProjection> projectionDefinition = null,
+            SortDefinition<T> sortDefinition = null)
+        {
+            var pipelineStages = new List<IPipelineStageDefinition>();
+
+            var filterDocument = filterDefinition?.ToBsonDocument();
+            var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
+
+            pipelineStages.Add(PipelineStageDefinitionBuilder.Match(filterExpression));
+
+            if (projectionDefinition != null)
+            {
+                pipelineStages.Add(PipelineStageDefinitionBuilder.Project(projectionDefinition));
+            }
+
+            if (sortDefinition != null)
+            {
+                pipelineStages.Add(PipelineStageDefinitionBuilder.Sort(sortDefinition));
+            }
+
+            pipelineStages.Add(PipelineStageDefinitionBuilder.Skip<T>(pageNumber - 1));
+            pipelineStages.Add(PipelineStageDefinitionBuilder.Limit<T>(pageSize));
+
+            var pipeline = new PipelineStagePipelineDefinition<T, TProjection>(pipelineStages);
+
+            return pipeline;
         }
     }
 }

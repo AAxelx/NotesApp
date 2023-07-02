@@ -10,8 +10,7 @@ namespace NotesApp.DAL.DataAccess.Models
     public class TaskListDto : IDocument
 	{
         [BsonId]
-        [Required]
-        public ObjectId? Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [StringLength(255, MinimumLength = 1)]
         public string Title { get; set; }

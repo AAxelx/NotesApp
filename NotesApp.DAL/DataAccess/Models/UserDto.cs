@@ -7,10 +7,10 @@ using NotesApp.DAL.DataAccess.Models.Abstractions;
 namespace NotesApp.DAL.DataAccess.Models
 {
     [BsonCollection("User")]
-    public class User : IDocument
+    public class UserDto : IDocument
     {
         [BsonId]
-        public ObjectId? Id { get; set; }
+        public ObjectId Id { get; set; }
 
         public string Name { get; set; }
     }
