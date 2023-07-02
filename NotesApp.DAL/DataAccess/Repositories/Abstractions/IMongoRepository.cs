@@ -10,9 +10,12 @@ namespace NotesApp.DAL.DataAccess.Repositories.Abstractions
     {
         Task<T> GetByIdAsync(ObjectId? id);
 
-        Task<IEnumerable<T>> GetAllAsync(FilterDefinition<T> filterDefinition = null);
-
-        Task<IEnumerable<T>> GetAllAsync(List<BsonDocument> pipeline);//revome mb
+        Task<IEnumerable<TProjection>> GetAllAsync<TProjection>(
+            int pageNumber,
+            int pageSize,
+            FilterDefinition<T> filterDefinition = null,
+            ProjectionDefinition<T, TProjection> projectionDefinition = null,
+            SortDefinition<T> sortDefinition = null);
 
         Task<T> CreateAsync(T document);
 
