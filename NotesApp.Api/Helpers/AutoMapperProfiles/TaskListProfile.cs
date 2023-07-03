@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using NotesApp.Api.Models.Requests.TaskList;
+using NotesApp.Api.Models.Responses.TaskList;
 using NotesApp.Api.Models.TaskList;
 using NotesApp.DAL.DataAccess.Models;
 
@@ -9,12 +10,13 @@ namespace NotesApp.Api.Helpers.AutoMapperProfiles
 	{
 		public TaskListProfile()
 		{
-            CreateMap<TaskListDto, TaskList>()
-				.ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id.Value));
+			CreateMap<TaskListDto, TaskListResponse>();
 
-            CreateMap<CreateTaskListDto, TaskListDto>();
+			CreateMap<TaskListDto, TaskListsResponse>();
 
-            CreateMap<UpdateTaskListDto, TaskListDto>();
+			CreateMap<TaskListDto, TaskListAccessesResponse>();
+
+            CreateMap<TaskListRequest, TaskListDto>();
         }
 	}
 }
