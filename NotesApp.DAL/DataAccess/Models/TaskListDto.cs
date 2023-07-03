@@ -6,11 +6,12 @@ using NotesApp.DAL.DataAccess.Models.Abstractions;
 
 namespace NotesApp.DAL.DataAccess.Models
 {
-	[BsonCollection("TaskList")]
+    [BsonCollection("TaskList")]
     public class TaskListDto : IDocument
-	{
+    {
         [BsonId]
-        public ObjectId Id { get; set; }
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
 
         [StringLength(255, MinimumLength = 1)]
         public string Title { get; set; }
@@ -19,9 +20,11 @@ namespace NotesApp.DAL.DataAccess.Models
 
         public DateTime LastUpdatedAt { get; set; }
 
-        public ObjectId OwnerId { get; set; }
+        [BsonElement("OwnerId")]
+        public string OwnerId { get; set; }
 
-        public List<ObjectId> SharedAccessUserIds { get; set; }
+        [BsonElement("SharedAccessUserIds")]
+        public List<string> SharedAccessUserIds { get; set; }
     }
 }
 
