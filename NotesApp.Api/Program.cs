@@ -1,5 +1,5 @@
-﻿using NotesApp.DAL.DataAccess.Configuration;
-using NotesApp.DAL.DataAccess.Models.Abstractions;
+﻿using NotesApp.Api.Helpers;
+using NotesApp.DAL.DataAccess.Configuration;
 using NotesApp.DAL.DataAccess.Repositories;
 using NotesApp.DAL.DataAccess.Repositories.Abstractions;
 using NotesApp.Services.Services;
@@ -14,15 +14,25 @@ public class Program
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<ITaskListService, TaskListService>();
 
-        builder.Services.AddSingleton<IMongoDbSettings, MongoDbSettings>();
-        builder.Services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
-        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        builder.Configuration.AddJsonFile("appsettings.json");
 
-        builder.Services.AddControllers();
+        var mongoDbSettings = new MongoDbSettings();
+        builder.Configuration.Bind("MongoDbSettings", mongoDbSettings);
+        builder.Services.AddSingleton<IMongoDbSettings>(mongoDbSettings);
+
+        builder.Services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
+
+        //builder.Services.AddControllers();
+        builder.Services.AddControllers().AddNewtonsoftJson(options =>
+        {
+            options.SerializerSettings.Converters.Add(new ObjectIdConverter());
+        });
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        
 
         var app = builder.Build();
 
