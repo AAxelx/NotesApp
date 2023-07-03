@@ -21,10 +21,7 @@ namespace NotesApp.DAL.DataAccess.Repositories
         public virtual async Task<T> GetByIdAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq(doc => doc.Id, id);
-
-            var result = await _collection.Aggregate()
-                .Match(filter)
-                .FirstOrDefaultAsync();
+            var result = await _collection.Find(filter).FirstOrDefaultAsync();
 
             return result;
         }

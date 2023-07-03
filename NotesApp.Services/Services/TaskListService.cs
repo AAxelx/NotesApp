@@ -23,7 +23,7 @@ namespace NotesApp.Services.Services
 
             if (taskList == null)
             {
-                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.NotFound);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
@@ -70,7 +70,7 @@ namespace NotesApp.Services.Services
 
             if(taskList == null)
             {
-                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.NotFound);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
@@ -96,7 +96,7 @@ namespace NotesApp.Services.Services
 
             if(taskList == null)
             {
-                return new ServiceResult(ResponseType.BadRequest);
+                return new ServiceResult(ResponseType.NotFound);
             }
 
             if (taskList.OwnerId != userId)
@@ -120,7 +120,7 @@ namespace NotesApp.Services.Services
 
             if(taskList == null)
             {
-                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.NotFound);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
@@ -147,7 +147,7 @@ namespace NotesApp.Services.Services
 
             if (taskList == null)
             {
-                return new ServiceValueResult<List<string>>(ResponseType.BadRequest);
+                return new ServiceValueResult<List<string>>(ResponseType.NotFound);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
@@ -166,7 +166,7 @@ namespace NotesApp.Services.Services
 
             if (taskList == null)
             {
-                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.NotFound);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
