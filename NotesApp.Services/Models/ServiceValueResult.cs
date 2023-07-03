@@ -6,11 +6,11 @@ namespace NotesApp.Services.Models
     {
         public T? Value { get; set; }
 
-        public ServiceValueResult(ErrorType type) : base(type)
+        public ServiceValueResult(ResponseType type) : base(type)
         {
         }
 
-        public ServiceValueResult(T value, ErrorType type = ErrorType.Ok) : base(type)
+        public ServiceValueResult(T value, ResponseType type = ResponseType.Ok) : base(type)
         {
             Value = value;
         }
