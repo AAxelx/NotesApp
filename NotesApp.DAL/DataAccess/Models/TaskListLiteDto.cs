@@ -4,9 +4,9 @@ using NotesApp.DAL.DataAccess.Models.Abstractions;
 
 namespace NotesApp.DAL.DataAccess.Models
 {
-	public class TaskListLiteDto
+	public class TaskListLiteDto : IDocument
 	{
-        public ObjectId Id { get; set; }
+        public string Id { get; set; }
         public string Title { get; set; }
     }
 }

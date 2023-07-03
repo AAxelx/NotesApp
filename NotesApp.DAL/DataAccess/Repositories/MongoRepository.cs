@@ -1,6 +1,5 @@
-﻿using System;
-using System.Linq.Expressions;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
+using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NotesApp.DAL.DataAccess.Configuration;
 using NotesApp.DAL.DataAccess.Models.Abstractions;
@@ -8,9 +7,9 @@ using NotesApp.DAL.DataAccess.Repositories.Abstractions;
 
 namespace NotesApp.DAL.DataAccess.Repositories
 {
-	public class MongoRepository<T> : IMongoRepository<T>
+    public class MongoRepository<T> : IMongoRepository<T>
         where T : IDocument
-	{
+    {
         private readonly IMongoCollection<T> _collection;
 
         public MongoRepository(IMongoDbSettings settings)
@@ -19,35 +18,40 @@ namespace NotesApp.DAL.DataAccess.Repositories
             _collection = database.GetCollection<T>(GetCollectionName(typeof(T)));
         }
 
-        public virtual async Task<T> GetByIdAsync(ObjectId? id)
+        public virtual async Task<T> GetByIdAsync(string id)
         {
-            var filterDocument = Builders<T>.Filter.Eq(doc => doc.Id, id).ToBsonDocument();
+            var filter = Builders<T>.Filter.Eq(doc => doc.Id, id);
 
-            var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
-            var result = await _collection.Find(filterExpression).FirstOrDefaultAsync();
+            var result = await _collection.Aggregate()
+                .Match(filter)
+                .FirstOrDefaultAsync();
 
             return result;
         }
 
-        public virtual async Task<IEnumerable<TProjection>> GetAllAsync<TProjection>(
+        public async Task<IEnumerable<T>> GetAll(
             int pageNumber,
             int pageSize,
-            FilterDefinition<T> filterDefinition = null,
-            ProjectionDefinition<T, TProjection> projectionDefinition = null,
-            SortDefinition<T> sortDefinition = null)
+            FilterDefinition<T> filterDefinition,
+            SortDefinition<T> sortDefinition,
+            ProjectionDefinition<T, BsonDocument> projectionDefinition)
         {
-            var pipeline = BuildPipeline(pageNumber, pageSize, filterDefinition, projectionDefinition, sortDefinition);
+            var aggregate = await _collection.Aggregate()
+                .Match(filterDefinition)
+                .Sort(sortDefinition)
+                .Skip((pageNumber - 1) * pageSize)
+                .Limit(pageSize)
+                .Project(projectionDefinition)
+                .ToListAsync();
 
-            var result = await _collection.Aggregate(pipeline).ToListAsync();
+            var result = new List<T>();
+            foreach (var bsonDocument in aggregate)
+            {
+                var document = BsonSerializer.Deserialize<T>(bsonDocument);
+                result.Add(document);
+            }
 
             return result;
-        }
-
-        public async Task<IEnumerable<T>> GetAllAsync(List<BsonDocument> pipeline)
-        {
-            var aggregation = await _collection.AggregateAsync<T>(pipeline);
-
-            return await aggregation.ToListAsync();
         }
 
         public virtual async Task<T> CreateAsync(T document)
@@ -57,7 +61,7 @@ namespace NotesApp.DAL.DataAccess.Repositories
             return document;
         }
 
-        public virtual async Task<bool> UpdateOneAsync(T document) 
+        public virtual async Task<bool> UpdateOneAsync(T document)
         {
             var updateDefinition = Builders<T>.Update.Set(doc => doc, document);
             var filter = Builders<T>.Filter.Eq(doc => doc.Id, document.Id);
@@ -67,7 +71,7 @@ namespace NotesApp.DAL.DataAccess.Repositories
             return Convert.ToBoolean(result.ModifiedCount);
         }
 
-        public async Task<bool> DeleteByIdAsync(ObjectId? id)
+        public async Task<bool> DeleteByIdAsync(string id)
         {
             var filter = Builders<T>.Filter.Eq(doc => doc.Id, id);
             var result = await _collection.DeleteOneAsync(filter);
@@ -83,38 +87,5 @@ namespace NotesApp.DAL.DataAccess.Repositories
 
             return attribute?.CollectionName ?? null;
         }
-
-        private PipelineDefinition<T, TProjection> BuildPipeline<TProjection>(
-            int pageNumber,
-            int pageSize,
-            FilterDefinition<T> filterDefinition = null,
-            ProjectionDefinition<T, TProjection> projectionDefinition = null,
-            SortDefinition<T> sortDefinition = null)
-        {
-            var pipelineStages = new List<IPipelineStageDefinition>();
-
-            var filterDocument = filterDefinition?.ToBsonDocument();
-            var filterExpression = new BsonDocumentFilterDefinition<T>(filterDocument);
-
-            pipelineStages.Add(PipelineStageDefinitionBuilder.Match(filterExpression));
-
-            if (projectionDefinition != null)
-            {
-                pipelineStages.Add(PipelineStageDefinitionBuilder.Project(projectionDefinition));
-            }
-
-            if (sortDefinition != null)
-            {
-                pipelineStages.Add(PipelineStageDefinitionBuilder.Sort(sortDefinition));
-            }
-
-            pipelineStages.Add(PipelineStageDefinitionBuilder.Skip<T>(pageNumber - 1));
-            pipelineStages.Add(PipelineStageDefinitionBuilder.Limit<T>(pageSize));
-
-            var pipeline = new PipelineStagePipelineDefinition<T, TProjection>(pipelineStages);
-
-            return pipeline;
-        }
     }
 }
-
