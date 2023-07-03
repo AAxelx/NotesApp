@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
 using NotesApp.Api.Models.Requests.TaskList;
+using NotesApp.Api.Models.Responses.TaskList;
+using NotesApp.Api.Models.TaskList;
 using NotesApp.DAL.DataAccess.Models;
 using NotesApp.Services.Services.Abstractions;
 
@@ -21,42 +22,47 @@ namespace NotesApp.Api.Controllers
         }
 
         [HttpGet("{taskListId}")]
-        public async Task<IActionResult> GetById(ObjectId taskListId, ObjectId userId)
+        public async Task<IActionResult> GetById(string taskListId, string userId)
         {
             var result = await _taskListService.GetByIdAsync(taskListId, userId);
 
-            return MapResponse(result);
+            return MapResponse(result, _mapper.Map<TaskListDto, TaskListResponse>);
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(ObjectId userId, int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAll(string userId, int pageNumber = 1, int pageSize = 10)
         {
-            var result = await _taskListService.GetAllByUserIdAsync(userId, pageNumber, pageSize);
+            var result = await _taskListService.GetAll(userId, pageNumber, pageSize);
 
-            return MapResponse(result, _mapper.Map<IEnumerable<TaskListLiteDto>>);
+            return MapResponse(result, _mapper.Map<List<TaskListDto>, TaskListsResponse>);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateTaskListDto requestModel)
+        public async Task<IActionResult> Create([FromBody] TaskListRequest requestModel, string userId)
         {
             var taskList = _mapper.Map<TaskListDto>(requestModel);
+            taskList.OwnerId = userId;
+            taskList.LastUpdatedAt = DateTime.UtcNow;
+
             var result = await _taskListService.CreateAsync(taskList);
 
-            return MapResponse(result);
+            return MapResponse(result, _mapper.Map<TaskListDto, TaskListResponse>);
         }
 
         [HttpPut("{taskListId}")]
-        public async Task<IActionResult> Update([FromBody] UpdateTaskListDto requestModel, ObjectId userId, ObjectId taskListId)              
+        public async Task<IActionResult> Update([FromBody] TaskListRequest requestModel, string userId, string taskListId)
         {
             var taskList = _mapper.Map<TaskListDto>(requestModel);
             taskList.Id = taskListId;
+            taskList.LastUpdatedAt = DateTime.UtcNow;
+
             var result = await _taskListService.UpdateAsync(taskList, userId);
 
-            return MapResponse(result);
+            return MapResponse(result, _mapper.Map<TaskListDto, TaskListResponse>);
         }
 
         [HttpDelete("{taskListId}")]
-        public async Task<IActionResult> Delete(ObjectId taskListId, ObjectId userId)
+        public async Task<IActionResult> Delete(string taskListId, string userId)
         {
             var result = await _taskListService.DeleteAsync(taskListId, userId);
 
@@ -64,29 +70,28 @@ namespace NotesApp.Api.Controllers
         }
 
         [HttpGet("{taskListId}/accesses")]
-        public async Task<IActionResult> GetAccesses(ObjectId taskListId, ObjectId userId)
+        public async Task<IActionResult> GetAccesses(string taskListId, string userId)
         {
             var result = await _taskListService.GetUserAccessListAsync(taskListId, userId);
 
-            return MapResponse(result);
+            return MapResponse(result, _mapper.Map<List<string>, TaskListAccessesResponse>);
         }
 
-        [HttpPut("{taskListId}/accesses/{newUserAccessId}")]
-        public async Task<IActionResult> AddAccess(ObjectId taskListId, ObjectId userId, ObjectId newUserAccessId)
+        [HttpPost("{taskListId}/accesses/{newUserAccessId}")]
+        public async Task<IActionResult> AddAccess(string taskListId, string userId, string newUserAccessId)
         {
             var result = await _taskListService.AddUserAccessAsync(taskListId, userId, newUserAccessId);
 
-            return MapResponse(result);
+            return MapResponse(result, _mapper.Map<TaskListDto, TaskListAccessesResponse>);
         }
 
         [HttpPut("{taskListId}/accesses/{userIdForRemove}")]
-        public async Task<IActionResult> RemoveAccess(ObjectId taskListId, ObjectId userId, ObjectId userIdForRemove)
+        public async Task<IActionResult> RemoveAccess(string taskListId, string userId, string userIdForRemove)
         {
             var result = await _taskListService.RemoveUserAccessAsync(taskListId, userId, userIdForRemove);
 
-            return MapResponse(result);
+            return MapResponse(result, _mapper.Map <TaskListDto, TaskListAccessesResponse >);
         }
-        
     }
 }
 
