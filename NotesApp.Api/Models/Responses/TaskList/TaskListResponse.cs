@@ -2,9 +2,9 @@
 
 namespace NotesApp.Api.Models.TaskList
 {
-	public class TaskList
+	public class TaskListResponse
 	{
-        public ObjectId Id { get; set; }
+        public string Id { get; set; }
 
         public string Title { get; set; }
 
@@ -12,8 +12,8 @@ namespace NotesApp.Api.Models.TaskList
 
         public DateTime LastUpdatedAt { get; set; }
 
-        public ObjectId OwnerId { get; set; }
+        public string OwnerId { get; set; }
 
-        public List<ObjectId> SharedAccessUserIds { get; set; }
+        public List<string> SharedAccessUserIds { get; set; }
     }
 }
