@@ -1,5 +1,4 @@
 ﻿
-using MongoDB.Bson;
 using MongoDB.Driver;
 using NotesApp.DAL.DataAccess.Models;
 using NotesApp.DAL.DataAccess.Repositories.Abstractions;
@@ -11,185 +10,189 @@ namespace NotesApp.Services.Services
 {
 	public class TaskListService : ITaskListService
     {
-        private readonly IMongoRepository<TaskList> _repository;
+        private readonly IMongoRepository<TaskListDto> _repository;
 
-		public TaskListService(IMongoRepository<TaskList> repository)
+		public TaskListService(IMongoRepository<TaskListDto> repository)
 		{
             _repository = repository;
 		}
 
-        public async Task<ServiceValueResult<TaskList>> GetByIdAsync(ObjectId listId, ObjectId userId)
+        public async Task<ServiceValueResult<TaskListDto>> GetByIdAsync(string listId, string userId)
         {
-            var taskList = await _repository.GetByIdAsync(listId);
+            var taskList = await _repository.GetByIdAsync(listId).ConfigureAwait(false);
 
             if (taskList == null)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
 
             if (!hasAccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.Forbidden);
+                return new ServiceValueResult<TaskListDto>(ResponseType.Forbidden);
             }
 
-            return new ServiceValueResult<TaskList>(taskList);
+            return new ServiceValueResult<TaskListDto>(taskList);
         }
 
-        public async Task<ServiceValueResult<IEnumerable<TaskList>>> GetAllByUserIdAsync(ObjectId userId)
+        public async Task<ServiceValueResult<List<TaskListDto>>> GetAll(string userId, int pageNumber, int pageSize)
         {
-            var filter = Builders<TaskList>.Filter.Or(
-                Builders<TaskList>.Filter.Eq(t => t.OwnerId, userId),
-                Builders<TaskList>.Filter.ElemMatch(t => t.SharedAccessUserIds, Builders<ObjectId>.Filter.Eq(i => i, userId)));
+            var filterDefinition = Builders<TaskListDto>.Filter.Eq(t => t.OwnerId, userId) |
+                Builders<TaskListDto>.Filter.AnyEq(t => t.SharedAccessUserIds, userId);
 
-            var sortStage = new BsonDocument("$sort", new BsonDocument("LastUpdatedAt", -1));
-            var pipeline = new List<BsonDocument> { filter.ToBsonDocument(), sortStage };
+            var sortDefinition = Builders<TaskListDto>.Sort.Descending(t => t.LastUpdatedAt);
 
-            var result = (List<TaskList>)await _repository.GetAllAsync(pipeline);
+            var projectionDefinition = Builders<TaskListDto>.Projection
+                .Include(t => t.Id)
+                .Include(t => t.Title);
 
-            return new ServiceValueResult<IEnumerable<TaskList>>(result);
+            var result = await _repository.GetAll(pageNumber, pageSize, filterDefinition, sortDefinition, projectionDefinition).ConfigureAwait(false);
+
+            return new ServiceValueResult<List<TaskListDto>>(result.ToList());
         }
 
-        public async Task<ServiceValueResult<TaskList>> CreateAsync(TaskList taskList)
+        public async Task<ServiceValueResult<TaskListDto>> CreateAsync(TaskListDto taskList) //add user is created and owner check
         {
-            var createdTaskList = await _repository.CreateAsync(taskList);
+            var createdTaskList = await _repository.CreateAsync(taskList).ConfigureAwait(false);
 
             if (createdTaskList.Id == null)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.InternalServerError);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
-            return new ServiceValueResult<TaskList>(createdTaskList);
+            return new ServiceValueResult<TaskListDto>(createdTaskList);
         }
 
-        public async Task<ServiceValueResult<TaskList>> UpdateAsync(TaskList updateTaskList, ObjectId userId)
+        public async Task<ServiceValueResult<TaskListDto>> UpdateAsync(TaskListDto updateTaskList, string userId)
         {
-            var taskList = await _repository.GetByIdAsync(updateTaskList.Id);
+            var taskList = await _repository.GetByIdAsync(updateTaskList.Id).ConfigureAwait(false);
 
             if(taskList == null)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
 
             if (!hasAccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.Forbidden);
+                return new ServiceValueResult<TaskListDto>(ResponseType.Forbidden);
             }
 
-            var isSuccess = await _repository.UpdateOneAsync(updateTaskList); //асинхронное обращение к бд
+            var isSuccess = await _repository.UpdateOneAsync(updateTaskList).ConfigureAwait(false);
 
             if (!isSuccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.InternalServerError);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
-            return new ServiceValueResult<TaskList>(updateTaskList); //fix порядок return // протестировать
+            return new ServiceValueResult<TaskListDto>(updateTaskList);
         }
         
-        public async Task<ServiceResult> DeleteAsync(ObjectId listId, ObjectId userId)
+        public async Task<ServiceResult> DeleteAsync(string listId, string userId)
         {
-            var taskList = await _repository.GetByIdAsync(listId);
+            var taskList = await _repository.GetByIdAsync(listId).ConfigureAwait(false);
 
             if(taskList == null)
             {
-                return new ServiceResult(ErrorType.BadRequest);
+                return new ServiceResult(ResponseType.BadRequest);
             }
 
             if (taskList.OwnerId != userId)
             {
-                return new ServiceResult(ErrorType.Forbidden);
+                return new ServiceResult(ResponseType.Forbidden);
             }
 
-            var isSuccess = await _repository.DeleteByIdAsync(listId);
+            var isSuccess = await _repository.DeleteByIdAsync(listId).ConfigureAwait(false);
 
             if (!isSuccess)
             {
-                return new ServiceResult(ErrorType.InternalServerError);
+                return new ServiceResult(ResponseType.BadRequest);
             }
 
-            return new ServiceResult(ErrorType.NoContent);
+            return new ServiceResult(ResponseType.NoContent);
         }
 
-        public async Task<ServiceValueResult<TaskList>> AddUserAccessAsync(ObjectId listId, ObjectId userId, ObjectId newUserAccessId)
+        public async Task<ServiceValueResult<TaskListDto>> AddUserAccessAsync(string listId, string userId, string newUserAccessId)
         {
-            var taskList = await _repository.GetByIdAsync(listId);
+            var taskList = await _repository.GetByIdAsync(listId).ConfigureAwait(false);
 
             if(taskList == null)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
 
             if (!hasAccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.Forbidden);
+                return new ServiceValueResult<TaskListDto>(ResponseType.Forbidden);
             }
 
             taskList.SharedAccessUserIds.Add(newUserAccessId);
-            var isSuccess = await _repository.UpdateOneAsync(taskList);
+            var isSuccess = await _repository.UpdateOneAsync(taskList).ConfigureAwait(false);
 
             if (!isSuccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.InternalServerError);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
-            return new ServiceValueResult<TaskList>(taskList);
+            return new ServiceValueResult<TaskListDto>(taskList);
         }
 
-        public async Task<ServiceValueResult<List<ObjectId>>> GetUserAccessListAsync(ObjectId listId, ObjectId userId)
+        public async Task<ServiceValueResult<List<string>>> GetUserAccessListAsync(string listId, string userId)
         {
-            var taskList = await _repository.GetByIdAsync(listId);
+            var taskList = await _repository.GetByIdAsync(listId).ConfigureAwait(false);
 
             if (taskList == null)
             {
-                return new ServiceValueResult<List<ObjectId>>(ErrorType.BadRequest);
+                return new ServiceValueResult<List<string>>(ResponseType.BadRequest);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
 
             if (!hasAccess)
             {
-                return new ServiceValueResult<List<ObjectId>>(ErrorType.Forbidden);
+                return new ServiceValueResult<List<string>>(ResponseType.Forbidden);
             }
 
-            return new ServiceValueResult<List<ObjectId>>(taskList.SharedAccessUserIds);
+            return new ServiceValueResult<List<string>>(taskList.SharedAccessUserIds);
         }
 
-        public async Task<ServiceValueResult<TaskList>> RemoveUserAccessAsync(ObjectId listId, ObjectId userId, ObjectId userIdForRemove)
+        public async Task<ServiceValueResult<TaskListDto>> RemoveUserAccessAsync(string listId, string userId, string userIdForRemove)
         {
-            var taskList = await _repository.GetByIdAsync(listId);
+            var taskList = await _repository.GetByIdAsync(listId).ConfigureAwait(false);
 
             if (taskList == null)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.BadRequest);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
             var hasAccess = IsUserHasAccess(taskList, userId);
 
             if (!hasAccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.Forbidden);
+                return new ServiceValueResult<TaskListDto>(ResponseType.Forbidden);
             }
 
             taskList.SharedAccessUserIds.Remove(userIdForRemove);
-            var isSuccess = await _repository.UpdateOneAsync(taskList);
+            var isSuccess = await _repository.UpdateOneAsync(taskList).ConfigureAwait(false);
 
             if (!isSuccess)
             {
-                return new ServiceValueResult<TaskList>(ErrorType.InternalServerError);
+                return new ServiceValueResult<TaskListDto>(ResponseType.BadRequest);
             }
 
-            return new ServiceValueResult<TaskList>(taskList);
+            return new ServiceValueResult<TaskListDto>(taskList);
         }
 
-        private bool IsUserHasAccess(TaskList taskList, ObjectId userId)
+        private bool IsUserHasAccess(TaskListDto taskList, string userId)
         {
             return taskList.OwnerId == userId || taskList.SharedAccessUserIds.Contains(userId);
         }
+
+        
     }
 }
 
