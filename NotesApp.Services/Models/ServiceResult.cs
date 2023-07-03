@@ -1,15 +1,14 @@
-﻿using System;
-using NotesApp.Services.Models.Enums;
+﻿using NotesApp.Services.Models.Enums;
 
 namespace NotesApp.Services.Models
 {
     public class ServiceResult
     {
-        public ErrorType ErrorType { get; set; }
+        public ResponseType ResponseType { get; set; }
 
-        public ServiceResult(ErrorType type)
+        public ServiceResult(ResponseType type)
         {
-            ErrorType = type;
+            ResponseType = type;
         }
     }
 }
