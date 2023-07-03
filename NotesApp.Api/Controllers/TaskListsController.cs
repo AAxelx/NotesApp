@@ -53,6 +53,7 @@ namespace NotesApp.Api.Controllers
         public async Task<IActionResult> Update([FromBody] TaskListRequest requestModel, string userId, string taskListId)
         {
             var taskList = _mapper.Map<TaskListDto>(requestModel);
+            taskList.OwnerId = userId;
             taskList.Id = taskListId;
             taskList.LastUpdatedAt = DateTime.UtcNow;
 
