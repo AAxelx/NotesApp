@@ -1,7 +1,8 @@
 ﻿using System;
+
 namespace NotesApp.Api.Models.Responses.TaskList
 {
-	public class TaskListLite
+	public class TaskListLiteDto
 	{
         public string Id { get; set; }
 

@@ -10,13 +10,14 @@ namespace NotesApp.Api.Helpers.AutoMapperProfiles
 	{
 		public TaskListProfile()
 		{
-			CreateMap<TaskListDto, TaskListResponse>();
+			CreateMap<TaskList, TaskListDto>();
 
-			CreateMap<TaskListDto, TaskListsResponse>();
+            CreateMap<TaskListRequest, TaskList>();
 
-			CreateMap<TaskListDto, TaskListAccessesResponse>();
-
-            CreateMap<TaskListRequest, TaskListDto>();
+            CreateMap<List<TaskList>, List<TaskListLiteDto>>()
+            .ForMember(dest => dest, opt => opt.MapFrom(src => src))
+            .ForMember(dest => dest[0].Id, opt => opt.MapFrom(src => src[0].Id))
+            .ProjectTo<List<TaskListLiteDto>>(MemberList.None);
         }
 	}
 }

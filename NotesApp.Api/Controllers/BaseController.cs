@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using NotesApp.Services.Models;
 using NotesApp.Services.Models.Enums;
-using NotesApp.Services.Services.Abstractions;
-
 namespace NotesApp.Api.Controllers
 {
     [Route("api/[controller]")]
@@ -31,9 +29,9 @@ namespace NotesApp.Api.Controllers
             return Ok(map.Invoke(result.Value));
         }
 
-        protected IActionResult GetResponseByType(ResponseType errorType)
+        protected IActionResult GetResponseByType(ResponseType responseType)
         {
-            switch (errorType)
+            switch (responseType)
             {
                 case ResponseType.Ok:
                     return Ok();

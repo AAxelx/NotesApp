@@ -7,7 +7,7 @@ using NotesApp.DAL.DataAccess.Models.Abstractions;
 namespace NotesApp.DAL.DataAccess.Models
 {
     [BsonCollection("TaskList")]
-    public class TaskListDto : IDocument
+    public class TaskList : IDocument
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -24,7 +24,7 @@ namespace NotesApp.DAL.DataAccess.Models
         public string OwnerId { get; set; }
 
         [BsonElement("SharedAccessUserIds")]
-        public List<string> SharedAccessUserIds { get; set; }
+        public List<string> SharedAccessUserIds { get; set; } = new List<string>();
     }
 }
 

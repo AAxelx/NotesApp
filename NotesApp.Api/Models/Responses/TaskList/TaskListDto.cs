@@ -2,7 +2,7 @@
 
 namespace NotesApp.Api.Models.TaskList
 {
-	public class TaskListResponse
+	public class TaskListDto
 	{
         public string Id { get; set; }
 

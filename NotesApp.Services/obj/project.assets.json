@@ -798,19 +798,19 @@
     ]
   },
   "packageFolders": {
-    "/Users/mac/.nuget/packages/": {}
+    "/Users/anton/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/mac/Projects/NotesApp/NotesApp.Services/NotesApp.Services.csproj",
+      "projectUniqueName": "/Users/anton/Documents/GitHub/NotesApp/NotesApp.Services/NotesApp.Services.csproj",
       "projectName": "NotesApp.Services",
-      "projectPath": "/Users/mac/Projects/NotesApp/NotesApp.Services/NotesApp.Services.csproj",
-      "packagesPath": "/Users/mac/.nuget/packages/",
-      "outputPath": "/Users/mac/Projects/NotesApp/NotesApp.Services/obj/",
+      "projectPath": "/Users/anton/Documents/GitHub/NotesApp/NotesApp.Services/NotesApp.Services.csproj",
+      "packagesPath": "/Users/anton/.nuget/packages/",
+      "outputPath": "/Users/anton/Documents/GitHub/NotesApp/NotesApp.Services/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/Users/mac/.nuget/NuGet/NuGet.Config"
+        "/Users/anton/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net7.0"
@@ -822,8 +822,8 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "projectReferences": {
-            "/Users/mac/Projects/NotesApp/NotesApp.DAL/NotesApp.DAL.csproj": {
-              "projectPath": "/Users/mac/Projects/NotesApp/NotesApp.DAL/NotesApp.DAL.csproj"
+            "/Users/anton/Documents/GitHub/NotesApp/NotesApp.DAL/NotesApp.DAL.csproj": {
+              "projectPath": "/Users/anton/Documents/GitHub/NotesApp/NotesApp.DAL/NotesApp.DAL.csproj"
             }
           }
         }
@@ -853,7 +853,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.304/RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.306/RuntimeIdentifierGraph.json"
       }
     }
   }
