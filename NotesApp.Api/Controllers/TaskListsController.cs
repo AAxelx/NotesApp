@@ -26,7 +26,7 @@ namespace NotesApp.Api.Controllers
         {
             var result = await _taskListService.GetByIdAsync(taskListId, userId);
 
-            return MapResponse(result, _mapper.Map<TaskListDto, TaskListResponse>);
+            return MapResponse(result, _mapper.Map<TaskList, TaskListDto>);
         }
 
         [HttpGet]
@@ -34,32 +34,32 @@ namespace NotesApp.Api.Controllers
         {
             var result = await _taskListService.GetAll(userId, pageNumber, pageSize);
 
-            return MapResponse(result, _mapper.Map<List<TaskListDto>, TaskListsResponse>);
+            return MapResponse(result, _mapper.Map<List<TaskList>, List<TaskListLiteDto>>(result));
         }
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] TaskListRequest requestModel, string userId)
         {
-            var taskList = _mapper.Map<TaskListDto>(requestModel);
+            var taskList = _mapper.Map<TaskList>(requestModel);
             taskList.OwnerId = userId;
             taskList.LastUpdatedAt = DateTime.UtcNow;
 
             var result = await _taskListService.CreateAsync(taskList);
 
-            return MapResponse(result, _mapper.Map<TaskListDto, TaskListResponse>);
+            return MapResponse(result, _mapper.Map<TaskList, TaskListDto>);
         }
 
         [HttpPut("{taskListId}")]
         public async Task<IActionResult> Update([FromBody] TaskListRequest requestModel, string userId, string taskListId)
         {
-            var taskList = _mapper.Map<TaskListDto>(requestModel);
+            var taskList = _mapper.Map<TaskList>(requestModel);
             taskList.OwnerId = userId;
             taskList.Id = taskListId;
             taskList.LastUpdatedAt = DateTime.UtcNow;
 
             var result = await _taskListService.UpdateAsync(taskList, userId);
 
-            return MapResponse(result, _mapper.Map<TaskListDto, TaskListResponse>);
+            return MapResponse(result, _mapper.Map<TaskList, TaskListDto>);
         }
 
         [HttpDelete("{taskListId}")]
@@ -75,23 +75,23 @@ namespace NotesApp.Api.Controllers
         {
             var result = await _taskListService.GetUserAccessListAsync(taskListId, userId);
 
-            return MapResponse(result, _mapper.Map<List<string>, TaskListAccessesResponse>);
+            return MapResponse(result, _mapper.Map<List<string>>);
         }
 
-        [HttpPost("{taskListId}/accesses/{newUserAccessId}")]
+        [HttpPut("{taskListId}/accesses/{newUserAccessId}")]
         public async Task<IActionResult> AddAccess(string taskListId, string userId, string newUserAccessId)
         {
             var result = await _taskListService.AddUserAccessAsync(taskListId, userId, newUserAccessId);
 
-            return MapResponse(result, _mapper.Map<TaskListDto, TaskListAccessesResponse>);
+            return MapResponse(result, _mapper.Map<TaskList, TaskListDto>);
         }
 
-        [HttpPut("{taskListId}/accesses/{userIdForRemove}")]
+        [HttpDelete("{taskListId}/accesses/{userIdForRemove}")]
         public async Task<IActionResult> RemoveAccess(string taskListId, string userId, string userIdForRemove)
         {
             var result = await _taskListService.RemoveUserAccessAsync(taskListId, userId, userIdForRemove);
 
-            return MapResponse(result, _mapper.Map <TaskListDto, TaskListAccessesResponse >);
+            return MapResponse(result, _mapper.Map<TaskList, TaskListDto>);
         }
     }
 }
