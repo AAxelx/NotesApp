@@ -14,10 +14,7 @@ namespace NotesApp.Api.Helpers.AutoMapperProfiles
 
             CreateMap<TaskListRequest, TaskList>();
 
-            CreateMap<List<TaskList>, List<TaskListLiteDto>>()
-            .ForMember(dest => dest, opt => opt.MapFrom(src => src))
-            .ForMember(dest => dest[0].Id, opt => opt.MapFrom(src => src[0].Id))
-            .ProjectTo<List<TaskListLiteDto>>(MemberList.None);
+            CreateMap<TaskList, TaskListLiteDto>();
         }
 	}
 }

@@ -132,8 +132,9 @@ namespace NotesApp.Services.Services
 
             if (taskList.SharedAccessUserIds.Contains(newUserAccessId))
             {
-                return new ServiceValueResult<TaskList>(ResponseType.Ok);
+                return new ServiceValueResult<TaskList>(taskList);
             }
+
             taskList.SharedAccessUserIds.Add(newUserAccessId);
             var isSuccess = await _repository.UpdateOneAsync(taskList).ConfigureAwait(false);
 
@@ -178,6 +179,11 @@ namespace NotesApp.Services.Services
             if (!hasAccess)
             {
                 return new ServiceValueResult<TaskList>(ResponseType.Forbidden);
+            }
+
+            if (!taskList.SharedAccessUserIds.Contains(userIdForRemove))
+            {
+                return new ServiceValueResult<TaskList>(ResponseType.NotFound);
             }
 
             taskList.SharedAccessUserIds.Remove(userIdForRemove);
