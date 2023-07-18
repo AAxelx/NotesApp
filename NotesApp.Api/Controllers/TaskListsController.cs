@@ -34,7 +34,7 @@ namespace NotesApp.Api.Controllers
         {
             var result = await _taskListService.GetAll(userId, pageNumber, pageSize);
 
-            return MapResponse(result, _mapper.Map<List<TaskList>, List<TaskListLiteDto>>(result));
+            return MapResponse(result, _mapper.Map<List<TaskListLiteDto>>);
         }
 
         [HttpPost]
