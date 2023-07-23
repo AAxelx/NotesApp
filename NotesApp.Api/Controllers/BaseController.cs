@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using NotesApp.Services.Models;
 using NotesApp.Services.Models.Enums;
 namespace NotesApp.Api.Controllers
@@ -7,11 +6,8 @@ namespace NotesApp.Api.Controllers
     [Route("api/[controller]")]
     public abstract class BaseController : Controller
     {
-        private readonly IMapper _mapper;
-
-        public BaseController(IMapper mapper)
+        public BaseController()
         {
-            _mapper = mapper;
         }
 
         protected IActionResult MapResponse(ServiceResult result)

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using NotesApp.DAL.DataAccess.Configuration.Abstractions;
 
 namespace NotesApp.DAL.DataAccess.Configuration
 {

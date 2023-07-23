@@ -2,6 +2,7 @@
 using MongoDB.Bson.Serialization;
 using MongoDB.Driver;
 using NotesApp.DAL.DataAccess.Configuration;
+using NotesApp.DAL.DataAccess.Configuration.Abstractions;
 using NotesApp.DAL.DataAccess.Models.Abstractions;
 using NotesApp.DAL.DataAccess.Repositories.Abstractions;
 
@@ -60,7 +61,6 @@ namespace NotesApp.DAL.DataAccess.Repositories
 
         public virtual async Task<bool> UpdateOneAsync(T document)
         {
-            //var updateDefinition = Builders<T>.Update.Set(doc => doc, document);
             var filter = Builders<T>.Filter.Eq(doc => doc.Id, document.Id);
 
             var result = await _collection.ReplaceOneAsync(filter, document);

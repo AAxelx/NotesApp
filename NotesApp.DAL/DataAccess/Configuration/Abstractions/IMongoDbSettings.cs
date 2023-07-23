@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NotesApp.DAL.DataAccess.Configuration
+namespace NotesApp.DAL.DataAccess.Configuration.Abstractions
 {
 	public interface IMongoDbSettings
 	{

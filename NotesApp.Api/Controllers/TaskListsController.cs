@@ -9,13 +9,13 @@ using NotesApp.Services.Services.Abstractions;
 namespace NotesApp.Api.Controllers
 {
     [ApiController]
-    [Route("api/v1/{userId}/[controller]")]
+    [Route("api/v1/users/{userId}/[controller]")]
     public class TaskListsController : BaseController
     {
         private readonly ITaskListService _taskListService;
         private readonly IMapper _mapper;
 
-        public TaskListsController(ITaskListService taskListService, IMapper mapper) : base(mapper)
+        public TaskListsController(ITaskListService taskListService, IMapper mapper)
         {
             _taskListService = taskListService;
             _mapper = mapper;

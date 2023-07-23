@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
@@ -20,6 +20,7 @@
     <None Remove="DataAccess\Models\Abstractions\" />
     <None Remove="DataAccess\Repositories\Abstractions\" />
     <None Remove="DataAccess\Configuration\" />
+    <None Remove="DataAccess\Configuration\Abstractions\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataAccess\" />
@@ -28,5 +29,6 @@
     <Folder Include="DataAccess\Models\Abstractions\" />
     <Folder Include="DataAccess\Repositories\Abstractions\" />
     <Folder Include="DataAccess\Configuration\" />
+    <Folder Include="DataAccess\Configuration\Abstractions\" />
   </ItemGroup>
 </Project>
