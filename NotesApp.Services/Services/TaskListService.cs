@@ -52,7 +52,7 @@ namespace NotesApp.Services.Services
             return new ServiceValueResult<List<TaskList>>(result.ToList());
         }
 
-        public async Task<ServiceValueResult<TaskList>> CreateAsync(TaskList taskList) //add user is created and owner check
+        public async Task<ServiceValueResult<TaskList>> CreateAsync(TaskList taskList) //TODO: add user is created and owner check
         {
             var createdTaskList = await _repository.CreateAsync(taskList).ConfigureAwait(false);
 
