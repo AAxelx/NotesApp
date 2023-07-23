@@ -20,10 +20,8 @@ namespace NotesApp.DAL.DataAccess.Models
 
         public DateTime LastUpdatedAt { get; set; }
 
-        [BsonElement("OwnerId")]
         public string OwnerId { get; set; }
 
-        [BsonElement("SharedAccessUserIds")]
         public List<string> SharedAccessUserIds { get; set; } = new List<string>();
     }
 }

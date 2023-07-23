@@ -18,10 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NotesApp.DAL\NotesApp.DAL.csproj">
+    <ProjectReference Include="..\NotesApp.Services\NotesApp.Services.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
-    <ProjectReference Include="..\NotesApp.Services\NotesApp.Services.csproj">
+    <ProjectReference Include="..\NotesApp.DAL\NotesApp.DAL.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

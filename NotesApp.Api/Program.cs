@@ -1,5 +1,6 @@
 ﻿using NotesApp.Api.Helpers;
 using NotesApp.DAL.DataAccess.Configuration;
+using NotesApp.DAL.DataAccess.Configuration.Abstractions;
 using NotesApp.DAL.DataAccess.Repositories;
 using NotesApp.DAL.DataAccess.Repositories.Abstractions;
 using NotesApp.Services.Services;
@@ -13,7 +14,6 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        // Add services to the container.
         builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
         builder.Services.AddScoped<ITaskListService, TaskListService>();
 
@@ -25,7 +25,6 @@ public class Program
 
         builder.Services.AddScoped(typeof(IMongoRepository<>), typeof(MongoRepository<>));
 
-        //builder.Services.AddControllers();
         builder.Services.AddControllers().AddNewtonsoftJson(options =>
         {
             options.SerializerSettings.Converters.Add(new ObjectIdConverter());
